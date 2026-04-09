@@ -1,0 +1,271 @@
+/* HEGEMON — Terminal Aesthetic */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root {
+  --bg:        #090910;
+  --bg2:       #0d0d18;
+  --border:    #1a1a2e;
+  --green:     #00ff88;
+  --green-dim: #00aa55;
+  --red:       #ff3333;
+  --blue:      #00aaff;
+  --yellow:    #ffcc00;
+  --purple:    #cc44ff;
+  --text:      #c0c0d0;
+  --dim:       #555566;
+  --font:      'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 12px;
+  line-height: 1.5;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Top bar ---- */
+#topbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 8px 16px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#logo {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 4px;
+}
+#tick-display {
+  color: var(--dim);
+  font-size: 11px;
+}
+#tick-display span { color: var(--yellow); }
+#conn-status {
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+#conn-status.live   { color: var(--green); }
+#conn-status.dead   { color: var(--red); }
+#conn-status.connecting { color: var(--yellow); }
+
+#topbar-right {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--dim);
+}
+#topbar-right a { color: var(--blue); text-decoration: none; }
+
+/* ---- Main layout ---- */
+#main {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  grid-template-rows: 1fr;
+  gap: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ---- Left panel (map + chronicle) ---- */
+#left {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--border);
+}
+
+#map-container {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  background: var(--bg);
+}
+
+#map-svg {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+#map-svg:active { cursor: grabbing; }
+
+/* ---- Map hex styles ---- */
+.hex-cell {
+  transition: opacity 0.3s;
+}
+.hex-cell polygon {
+  stroke: #222233;
+  stroke-width: 1;
+  transition: fill 0.4s;
+}
+.hex-cell:hover polygon {
+  stroke: var(--green);
+  stroke-width: 1.5;
+}
+.hex-cell text {
+  font-family: var(--font);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ---- Chronicle strip ---- */
+#chronicle {
+  height: 140px;
+  overflow-y: auto;
+  border-top: 1px solid var(--border);
+  padding: 6px 12px;
+  background: var(--bg2);
+  flex-shrink: 0;
+}
+#chronicle-title {
+  color: var(--dim);
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+.chron-entry {
+  padding: 2px 0;
+  border-bottom: 1px solid #111120;
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+}
+.chron-entry .tick  { color: var(--dim); min-width: 32px; }
+.chron-entry .type  { min-width: 90px; }
+.chron-entry .msg   { color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chron-entry.highlight .msg { color: var(--yellow); }
+.type-CONQUEST      { color: var(--red); }
+.type-TREATY_FORMED { color: var(--green); }
+.type-TREATY_BROKEN { color: var(--red); }
+.type-BROADCAST     { color: var(--blue); }
+.type-REPELLED      { color: var(--purple); }
+.type-TICK          { color: var(--dim); }
+
+/* ---- Right panel ---- */
+#right {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- Leaderboard ---- */
+#leaderboard {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 8px;
+  background: var(--bg2);
+}
+#leaderboard-title {
+  color: var(--dim);
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+.lb-row {
+  display: grid;
+  grid-template-columns: 14px 80px 28px 40px 36px;
+  gap: 4px;
+  align-items: center;
+  padding: 2px 0;
+  font-size: 11px;
+  border-bottom: 1px solid #111120;
+  cursor: pointer;
+}
+.lb-row:hover { background: #111122; }
+.lb-row.selected { background: #0d1a2a; }
+.lb-rank    { color: var(--dim); }
+.lb-name    { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lb-regions { color: var(--blue); text-align: right; }
+.lb-stand   { color: var(--yellow); text-align: right; }
+.lb-gold    { color: var(--green-dim); text-align: right; }
+.lb-dot     { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+
+/* ---- Agent detail panel ---- */
+#agent-detail {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  background: var(--bg);
+}
+#agent-detail-title {
+  color: var(--dim);
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+  font-size: 11px;
+  border-bottom: 1px solid #111120;
+}
+.stat-label { color: var(--dim); }
+.stat-val   { color: var(--text); }
+
+/* ---- Reasoning stream ---- */
+#reasoning-panel {
+  border-top: 1px solid var(--border);
+  background: var(--bg2);
+  flex-shrink: 0;
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+}
+#reasoning-title {
+  padding: 4px 8px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--dim);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#reasoning-stream {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 8px;
+  font-size: 10px;
+  color: var(--green-dim);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--green-dim); }
+
+/* ---- Tooltip ---- */
+#tooltip {
+  position: fixed;
+  pointer-events: none;
+  background: #0d0d18;
+  border: 1px solid var(--green);
+  padding: 8px 12px;
+  font-size: 11px;
+  color: var(--text);
+  z-index: 100;
+  display: none;
+  max-width: 200px;
+}
+#tooltip .tt-name  { color: var(--green); font-weight: 700; margin-bottom: 4px; }
+#tooltip .tt-row   { display: flex; justify-content: space-between; gap: 16px; }
+#tooltip .tt-label { color: var(--dim); }
+
+/* ---- Flash animation for new events ---- */
+@keyframes flash {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+.flash { animation: flash 0.6s ease; }
